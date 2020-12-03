@@ -1,0 +1,16 @@
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.exe
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.csprojAssemblyReference.cache
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.AssemblyInfoInputs.cache
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.AssemblyInfo.cs
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.deps.json
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.runtimeconfig.json
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.runtimeconfig.dev.json
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.dll
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\StudentAssistantTelegramBot.pdb
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\Telegram.Bot.dll
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.csproj.CoreCompileInputs.cache
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.csproj.CopyComplete
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.dll
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.pdb
+C:\Users\luspa\Desktop\StudentAssistantTelegramBot\StudentAssistantTelegramBot\obj\Debug\netcoreapp3.1\StudentAssistantTelegramBot.genruntimeconfig.cache
