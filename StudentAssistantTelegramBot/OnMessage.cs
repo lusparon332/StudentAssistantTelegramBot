@@ -74,17 +74,45 @@ namespace StudentAssistantTelegramBot
                 answer = "музыка";
             }
             /* =================================== STUDY_MENU =================================== */
-            else if (message == "/makeschedule" && stud.users_loc == LevelOfCode.STUDY_MENU)
-            {
-                answer = "расписание";
-            }
             else if (message == "/advice" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 answer = "советов нет, но вы держитесь";
+
             }
+            else if (message == "/makeschedule" && stud.users_loc == LevelOfCode.STUDY_MENU)
+            {
+                answer = "Отлично. Перед тем, как начать, введи название предмета, по которому будет ближайший экзамен.";
+                stud.users_loc = LevelOfCode.MAKE_EXAM_NAME;
+            }
+            else if (stud.users_loc == LevelOfCode.MAKE_EXAM_NAME)
+            {
+                stud.current_exam.name = message;
+                answer = "Теперь введи количество вопросов в экзамене.";
+                stud.users_loc = LevelOfCode.MAKE_EXAM_CNT;
+            }
+            else if (stud.users_loc == LevelOfCode.MAKE_EXAM_CNT)
+            {
+                int cnt_of_q = 1;
+                if (int.TryParse(message, out cnt_of_q))
+                {
+                    answer = "Принято. Теперь введи дату экзамена в формате ДД.ММ.ГГГГ, например 12.06.2021";
+                    stud.current_exam.question_cnt = cnt_of_q;
+                    stud.users_loc = LevelOfCode.MAKE_EXAM_DATE;
+                }
+                else
+                {
+                    answer = "Количество вопросов - число. Попробуй ввести ещё раз.";
+                }
+            }
+            else if (stud.users_loc == LevelOfCode.MAKE_EXAM_DATE)
+            {
+                
+            }
+            
+            
             /* ================================================================================== */
 
-            Console.WriteLine($" | level after: {stud.users_loc}");
+                Console.WriteLine($" | level after: {stud.users_loc}");
 
             if (answer == "no_answer")
                 return;

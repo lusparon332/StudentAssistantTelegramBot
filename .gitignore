@@ -1,0 +1,4 @@
+*.exe
+bin
+obj
+StudentAssistantTelegramBot\bin\Debug\netcoreapp3.1\token.txt
