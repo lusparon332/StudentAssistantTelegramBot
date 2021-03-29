@@ -8,7 +8,7 @@ using Telegram.Bot;
 namespace StudentAssistantTelegramBot
 {
     // для опознования, в каком меню находится пользователь
-    public enum LevelOfCode { MAIN_MENU = 0, STUDY_MENU, FAN_MENU, MAKE_EXAM_NAME, MAKE_EXAM_CNT, MAKE_EXAM_DATE };
+    public enum LevelOfCode { MAIN_MENU = 0, STUDY_MENU, FAN_MENU, MAKE_EXAM_NAME, MAKE_EXAM_CNT, MAKE_EXAM_DATE, PREPARE_TIME };
 
     public class Students
     {
@@ -95,11 +95,15 @@ namespace StudentAssistantTelegramBot
         public long student_id; // id пользователя
         public LevelOfCode users_loc; // уровень вложенности кода для пользователя
         public Exam current_exam; // ближайший экзамен студента
+        public Dictionary<string, DateTime[]> Shedule; // расписание, составленное для пользователя
+        public LevelOfCode prev_loc;
 
         public Student(long id, LevelOfCode loc)
         {
             this.student_id = id;
             this.users_loc = loc;
+            this.current_exam = new Exam();
+            this.Shedule = new Dictionary<string, DateTime[]>();
         }
 
     }
@@ -115,7 +119,7 @@ namespace StudentAssistantTelegramBot
         {
             this.name = "name";
             this.question_cnt = 1;
-            this.date = DateTime.Now.AddDays(777);
+            this.date = DateTime.Now.AddDays(77777);
         }
     }
 }

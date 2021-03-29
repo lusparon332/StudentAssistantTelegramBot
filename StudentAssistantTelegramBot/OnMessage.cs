@@ -79,6 +79,7 @@ namespace StudentAssistantTelegramBot
                 answer = "советов нет, но вы держитесь";
 
             }
+            /* ============================= СОСТАВЛЕНИЕ РАСПИСАНИЯ ============================= */
             else if (message == "/makeschedule" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 answer = "Отлично. Перед тем, как начать, введи название предмета, по которому будет ближайший экзамен.";
@@ -106,7 +107,40 @@ namespace StudentAssistantTelegramBot
             }
             else if (stud.users_loc == LevelOfCode.MAKE_EXAM_DATE)
             {
-                
+                int e_day = 1;
+                int e_month = 1;
+                int e_year = 2000;
+                if (int.TryParse(message.Substring(0, 2), out e_day) && 
+                    int.TryParse(message.Substring(3, 2), out e_month) &&
+                    int.TryParse(message.Substring(6, 4), out e_year) &&
+                    e_month > 0 && e_month < 13 &&
+                    e_year > 2020 && e_year < 2900 && 
+                    IsRealDay(e_day, e_month, e_year))
+                {
+                    stud.current_exam.date = new DateTime(e_year, e_month, e_day, 8, 30, 0);
+                    DateTime now = DateTime.Now;
+
+                    int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
+                    if (dayUntil <= 1)
+                        answer = "До экзамена слишком мало времени. Тут уж никакое расписание не поможет, так что прямо сейчас садить и учи всё подряд!";
+                    else
+                    {
+                        DateTime[] dates = new DateTime[dayUntil];
+                        for (int i = 0; i < dayUntil; i++)
+                        {
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 01, 7).AddDays(i + 1);
+                            dates[i] = date;
+                        };
+                        answer = " Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
+                            "начать подготовку. В случае чего ты всегда можешь её перенести на несколько минут или часов.";
+                        stud.Shedule.Add(stud.current_exam.name, dates);
+                    }
+                    stud.users_loc = LevelOfCode.MAIN_MENU;
+                }
+                else
+                {
+                    answer = "Похоже, ты ввёл некорректную дату. Попробуй ввести ещё раз.";
+                }
             }
             
             
@@ -118,6 +152,31 @@ namespace StudentAssistantTelegramBot
                 return;
 
             Program.Bot.SendTextMessageAsync(stud.student_id, answer); // отправка сообщения
+        }
+
+        public static bool IsRealDay(int day, int month, int year)
+        {
+            if (new int[] { 1, 3, 5, 7, 8, 10, 12 }.Contains(month))
+                return (day > 0 && day < 32);
+            else if (new int[] { 4, 6, 9, 11 }.Contains(month))
+                return (day > 0 && day < 31);
+            else if (IsLeapYear(year))
+                return (day > 0 && day < 30);
+            else
+                return (day > 0 && day < 29);
+        }
+
+        public static bool IsLeapYear(int year)
+        {
+            if (year % 4 != 0)
+                return false;
+            else if (year % 100 == 0)
+                if (year % 400 == 0)
+                    return true;
+                else
+                    return false;
+            else
+                return true;
         }
     }
 }
