@@ -41,9 +41,17 @@ namespace StudentAssistantTelegramBot
                 answer = $"Ты в главном меню.\n" +
                     $"Отсюда ты можешь перейти:\n" +
                     $"• в раздел учёбы командой /study\n" +
-                    $"• в раздел развлечений командой /fan\n\n" +
+                    $"• в раздел развлечений командой /fan\n" +
+                    $"• получить информацию о боте командой /info\n\n" +
                     $"Ну что, будем учиться или отдохнём?";
                 stud.users_loc = LevelOfCode.MAIN_MENU;
+            }
+            if (message == "/info")
+            {
+                answer = $"Я бот-помощник в подготовке к сессии, моя главная задача - помочь тебе " +
+                    $"правильно распределить время в подготовке к сессии, составив расписание, и " +
+                    $"стимулировать начать готовиться к ней периодическими напоминаниями. Также я могу помочь" +
+                    $" тебе расслабиться во время подготовки рекомендацией музыки или забавным анекдотом.";
             }
             /* =================================== MAIN_MENU =================================== */
             else if (message == "/fan" && stud.users_loc == LevelOfCode.MAIN_MENU)
@@ -51,7 +59,8 @@ namespace StudentAssistantTelegramBot
                 answer = $"Ты в меню развлечений.\n" +
                     $"Здесь я могу:\n" +
                     $"• рассказать тебе случайный анекдот (команда /joke)\n" +
-                    $"• порекомендовать музыку (команда /music)\n\n" +
+                    $"• порекомендовать музыку (команда /music)\n" +
+                    $"• порекомендовать музыку по жанру (команда /jmusic)\n\n" +
                     $"Вернуться в главное меню - команда /menu";
                 stud.users_loc = LevelOfCode.FAN_MENU;
             }
@@ -60,25 +69,57 @@ namespace StudentAssistantTelegramBot
                 answer = $"Ты в меню подготовки к сессии. ✏\n" +
                     $"Здесь я могу:\n" +
                     $"• составить тебе расписание для сессии (команда /makeschedule)\n" +
-                    $"• дать совет по подготовке к сессии (команда /advice)\n\n" +
+                    $"• дать совет по подготовке к сессии (команда /advice)\n" +
+                    $"• дать информацию о прогрессе в подготовке, полученную на основе твоего следования расписанию - /my_success\n\n" +
                     $"Вернуться в главное меню - команда /menu";
                 stud.users_loc = LevelOfCode.STUDY_MENU;
             }
             /* =================================== FAN_MENU =================================== */
             else if (message == "/joke" && stud.users_loc == LevelOfCode.FAN_MENU)
             {
-                answer = "шутка";
+                answer = Secondary.RandMilJoke();
             }
             else if (message == "/music" && stud.users_loc == LevelOfCode.FAN_MENU)
             {
-                answer = "музыка";
+                answer = Secondary.RandMusic();
             }
+            else if (message == "/jmusic" && stud.users_loc == LevelOfCode.FAN_MENU)
+            {
+                answer = $"Хорошо, назови жанр (команда /жанр Название_Жанра). Но учти, я знаю пока только рок, поп, альтернативу и классическую музыку...\n" +
+                    $"Вернуться в меню развлечений- команда /fan";
+                stud.users_loc = LevelOfCode.FAN_JANR;
+            }
+            else if (message.Contains("/жанр") && stud.users_loc == LevelOfCode.FAN_JANR)
+            {
+                string j = "";
+                if (message.ToLower().Contains("класси"))
+                    j = "классическая";
+                else if (message.ToLower().Contains("рок"))
+                    j = "рок";
+                else if (message.ToLower().Contains("поп"))
+                    j = "поп";
+                else if (message.ToLower().Contains("альтерн"))
+                    j = "альтернатива";
+                answer = Secondary.JanrRandMusic(j);
+            }
+
             /* =================================== STUDY_MENU =================================== */
             else if (message == "/advice" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 answer = "советов нет, но вы держитесь";
 
             }
+            else if (message == "/my_success" && stud.users_loc == LevelOfCode.STUDY_MENU)
+            {
+                int dayUntil = (stud.current_exam.date.Date - DateTime.Now.Date).Days;
+                if (stud.success < 0)
+                    answer = $"Подготовка идёт не особо хорошо. Советую поднапрячься, дней до экзамена: {dayUntil}.";
+                if (stud.success == 0)
+                    answer = $"Ты пока не начал готовиться. Дней до экзамена: {dayUntil}.";
+                else
+                    answer = $"Подготовка идёт стабильно. Дней до экзамена: {dayUntil}.";
+            }
+            
             /* ============================= СОСТАВЛЕНИЕ РАСПИСАНИЯ ============================= */
             else if (message == "/makeschedule" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
@@ -110,7 +151,7 @@ namespace StudentAssistantTelegramBot
                 int e_day = 1;
                 int e_month = 1;
                 int e_year = 2000;
-                if (int.TryParse(message.Substring(0, 2), out e_day) && 
+                if (message.Length == 10 && int.TryParse(message.Substring(0, 2), out e_day) && 
                     int.TryParse(message.Substring(3, 2), out e_month) &&
                     int.TryParse(message.Substring(6, 4), out e_year) &&
                     e_month > 0 && e_month < 13 &&
@@ -128,10 +169,10 @@ namespace StudentAssistantTelegramBot
                         DateTime[] dates = new DateTime[dayUntil];
                         for (int i = 0; i < dayUntil; i++)
                         {
-                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 01, 7).AddDays(i + 1);
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 2, 36, 07).AddDays(i + 0);
                             dates[i] = date;
                         };
-                        answer = " Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
+                        answer = "Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
                             "начать подготовку. В случае чего ты всегда можешь её перенести на несколько минут или часов.";
                         stud.Shedule.Add(stud.current_exam.name, dates);
                     }
@@ -142,11 +183,55 @@ namespace StudentAssistantTelegramBot
                     answer = "Похоже, ты ввёл некорректную дату. Попробуй ввести ещё раз.";
                 }
             }
-            
-            
+            /* =============================== ПЕРЕНОС ПОДГОТОВКИ =============================== */
+            else if (message == "/yes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Отлично, удачи!";
+                stud.success++;
+                stud.users_loc = stud.prev_loc;
+            }
+            else if (message == "/postpone_15_minutes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Хорошо, подготовка перенесена на 15 минут. Главное - долго не затягивай!";
+                DateTime now = DateTime.Now;
+                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(1);
+                int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
+                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                stud.users_loc = stud.prev_loc;
+            }
+            else if (message == "/postpone_30_minutes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Хорошо, подготовка перенесена на 30 минут. Главное - долго не затягивай!";
+                DateTime now = DateTime.Now;
+                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(30);
+                int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
+                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                stud.users_loc = stud.prev_loc;
+            }
+            else if (message == "/postpone_1_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Хорошо, подготовка перенесена на 1 час. Главное - долго не затягивай!";
+                stud.success--;
+                DateTime now = DateTime.Now;
+                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddHours(1);
+                int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
+                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                stud.users_loc = stud.prev_loc;
+            }
+            else if (message == "/postpone_2_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Хорошо, подготовка перенесена на 2 часа. Главное - долго не затягивай!";
+                stud.success--;
+                DateTime now = DateTime.Now;
+                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddHours(2);
+                int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
+                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                stud.users_loc = stud.prev_loc;
+            }
+
             /* ================================================================================== */
 
-                Console.WriteLine($" | level after: {stud.users_loc}");
+            Console.WriteLine($" | level after: {stud.users_loc}");
 
             if (answer == "no_answer")
                 return;
