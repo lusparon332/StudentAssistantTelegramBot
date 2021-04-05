@@ -170,7 +170,7 @@ namespace StudentAssistantTelegramBot
                         DateTime[] dates = new DateTime[dayUntil];
                         for (int i = 0; i < dayUntil; i++)
                         {
-                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 2, 36, 07).AddDays(i + 0);
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 01, 07).AddDays(i + 1);
                             dates[i] = date;
                         };
                         answer = "Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
@@ -195,7 +195,7 @@ namespace StudentAssistantTelegramBot
             {
                 answer = "Хорошо, подготовка перенесена на 15 минут. Главное - долго не затягивай!";
                 DateTime now = DateTime.Now;
-                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(1);
+                DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(15);
                 int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
                 stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;

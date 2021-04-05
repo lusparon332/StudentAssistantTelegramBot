@@ -15,7 +15,7 @@ namespace StudentAssistantTelegramBot
         }
 
         // бот
-        public static readonly TelegramBotClient Bot = new TelegramBotClient(GetToken()); //TestToken was here!
+        public static readonly TelegramBotClient Bot = new TelegramBotClient(GetToken());
 
         // пользователи
         public static Students students = new Students();
