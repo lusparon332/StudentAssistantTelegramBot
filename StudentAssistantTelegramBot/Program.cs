@@ -2,14 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using Telegram.Bot;
+using System.IO;
 using System.Threading;
 
 namespace StudentAssistantTelegramBot
 {
     class Program
     {
+        static string GetToken()
+        {
+            return File.ReadAllText("token.txt");
+        }
+
         // бот
-        public static readonly TelegramBotClient Bot = new TelegramBotClient("1318546767:AAGL7DTFappCbvoiPbIVn8owYYsS7mFEF7U"); //TestToken was here!
+        public static readonly TelegramBotClient Bot = new TelegramBotClient(GetToken()); //TestToken was here!
 
         // пользователи
         public static Students students = new Students();

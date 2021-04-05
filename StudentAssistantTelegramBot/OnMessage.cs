@@ -54,13 +54,13 @@ namespace StudentAssistantTelegramBot
                     $" тебе расслабиться во время подготовки рекомендацией музыки или забавным анекдотом.";
             }
             /* =================================== MAIN_MENU =================================== */
-            else if (message == "/fan" && stud.users_loc == LevelOfCode.MAIN_MENU)
+            else if (message == "/fan" && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FAN_JANR))
             {
                 answer = $"Ты в меню развлечений.\n" +
                     $"Здесь я могу:\n" +
                     $"• рассказать тебе случайный анекдот (команда /joke)\n" +
                     $"• порекомендовать музыку (команда /music)\n" +
-                    $"• порекомендовать музыку по жанру (команда /jmusic)\n\n" +
+                    $"• порекомендовать музыку по жанру (команда /gmusic)\n\n" +
                     $"Вернуться в главное меню - команда /menu";
                 stud.users_loc = LevelOfCode.FAN_MENU;
             }
@@ -83,22 +83,23 @@ namespace StudentAssistantTelegramBot
             {
                 answer = Secondary.RandMusic();
             }
-            else if (message == "/jmusic" && stud.users_loc == LevelOfCode.FAN_MENU)
+            else if (message == "/gmusic" && stud.users_loc == LevelOfCode.FAN_MENU)
             {
-                answer = $"Хорошо, назови жанр (команда /жанр Название_Жанра). Но учти, я знаю пока только рок, поп, альтернативу и классическую музыку...\n" +
-                    $"Вернуться в меню развлечений- команда /fan";
+                answer = $"Хорошо, назови жанр.\n\nКлассика - /genre_classic\nРок - /genre_rock\nПоп - /genre_pop\n" +
+                    $"Альтернатива - /genre_alternative\n\n" +
+                    $"Вернуться в меню развлечений - команда /fan";
                 stud.users_loc = LevelOfCode.FAN_JANR;
             }
-            else if (message.Contains("/жанр") && stud.users_loc == LevelOfCode.FAN_JANR)
+            else if (message.Contains("/genre") && stud.users_loc == LevelOfCode.FAN_JANR)
             {
                 string j = "";
-                if (message.ToLower().Contains("класси"))
+                if (message.ToLower().Contains("classic"))
                     j = "классическая";
-                else if (message.ToLower().Contains("рок"))
+                else if (message.ToLower().Contains("rock"))
                     j = "рок";
-                else if (message.ToLower().Contains("поп"))
+                else if (message.ToLower().Contains("pop"))
                     j = "поп";
-                else if (message.ToLower().Contains("альтерн"))
+                else if (message.ToLower().Contains("alternative"))
                     j = "альтернатива";
                 answer = Secondary.JanrRandMusic(j);
             }
