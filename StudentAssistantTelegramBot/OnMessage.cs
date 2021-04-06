@@ -107,16 +107,30 @@ namespace StudentAssistantTelegramBot
             /* =================================== STUDY_MENU =================================== */
             else if (message == "/advice" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
-                answer = "советов нет, но вы держитесь";
-
+                answer = "Задавай свой вопрос, студент!";
+                stud.users_loc = LevelOfCode.QUESTIONS_MENU;
             }
+            /* =================================== QUESTIONS_MENU =================================== */
+            else if (stud.users_loc == LevelOfCode.QUESTIONS_MENU)
+            {
+                if (message == "/there_is_not")
+                {
+                    answer = "Спасибо, ваш вопрос записан и скоро будет обработан! Возвращаем тебя в меню study.";
+                    questionnaire.AddNewQuestion();
+                    stud.users_loc = LevelOfCode.STUDY_MENU;
+                }
+                else
+                    answer = "Выбери свой вопрос в списке похожих. \nЕсли его здесь нет, введи - /there_is_not\nТогда вопрос будет отправлен" +
+                        " нашим добровольцам, которые ответят на него, после чего вопрос с ответом пополнят базу. \nСписок:\n" + questionnaire.FindMatch(message);
+            }
+
             else if (message == "/my_success" && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 int dayUntil = (stud.current_exam.date.Date - DateTime.Now.Date).Days;
                 if (stud.success < 0)
                     answer = $"Подготовка идёт не особо хорошо. Советую поднапрячься, дней до экзамена: {dayUntil}.";
                 if (stud.success == 0)
-                    answer = $"Ты пока не начал готовиться. Дней до экзамена: {dayUntil}.";
+                    answer = $"Ты пока не начал готовиться.";
                 else
                     answer = $"Подготовка идёт стабильно. Дней до экзамена: {dayUntil}.";
             }
@@ -170,7 +184,7 @@ namespace StudentAssistantTelegramBot
                         DateTime[] dates = new DateTime[dayUntil];
                         for (int i = 0; i < dayUntil; i++)
                         {
-                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 01, 07).AddDays(i + 1);
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 1, 7).AddDays(i + 1).AddMilliseconds(stud.student_id % 10000);
                             dates[i] = date;
                         };
                         answer = "Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
@@ -197,7 +211,8 @@ namespace StudentAssistantTelegramBot
                 DateTime now = DateTime.Now;
                 DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(15);
                 int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
-                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                int l = stud.Shedule[stud.current_exam.name].Length;
+                stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
             else if (message == "/postpone_30_minutes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
@@ -206,7 +221,8 @@ namespace StudentAssistantTelegramBot
                 DateTime now = DateTime.Now;
                 DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddMinutes(30);
                 int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
-                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                int l = stud.Shedule[stud.current_exam.name].Length;
+                stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
             else if (message == "/postpone_1_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
@@ -216,7 +232,8 @@ namespace StudentAssistantTelegramBot
                 DateTime now = DateTime.Now;
                 DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddHours(1);
                 int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
-                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                int l = stud.Shedule[stud.current_exam.name].Length;
+                stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
             else if (message == "/postpone_2_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
@@ -226,7 +243,8 @@ namespace StudentAssistantTelegramBot
                 DateTime now = DateTime.Now;
                 DateTime new_date = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second).AddHours(2);
                 int dayUntil = (stud.current_exam.date.Date - now.Date).Days;
-                stud.Shedule[stud.current_exam.name][dayUntil - 1] = new_date;
+                int l = stud.Shedule[stud.current_exam.name].Length;
+                stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
 
