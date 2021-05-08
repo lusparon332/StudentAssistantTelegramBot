@@ -38,6 +38,12 @@ namespace StudentAssistantTelegramBot
         //БД музыки жанра Classic
         public static string[] Classicmus = new string[0];
 
+        //Путь к файлу students
+        public static string path = "students.txt";
+
+        //Флаг завершения
+        public static bool exit = false;
+
         static void Main()
         {
             Thread BotMain = new Thread(ThreadMain);
@@ -45,13 +51,25 @@ namespace StudentAssistantTelegramBot
 
             BotMain.Start();
             WarnThread.Start();
+
+            string consoleInput = "";
+            while (consoleInput != "stop")
+            {
+                consoleInput = Console.ReadLine();
+            }
+            exit = true;
+            //Bot.StopReceiving();
+            //BotMain.Abort();
+            //WarnThread.Abort();
+            Console.WriteLine("\nБот выключен окончательно.\n");
+            students.WriteStudentsList(path);
         }
 
 
         static void ThreadMain()
         {
             /*Область считывания БД из файлов (Поменять к защите или лучше предзащите)*/
-            string path = "students.txt";
+            //string path = "students.txt";
             students.ReadStudentsList(path);
 
 
@@ -64,22 +82,27 @@ namespace StudentAssistantTelegramBot
             Classicmus = Secondary.GetMusic("Music.txt", "*классическая");
 
             /*Конец области заполнения БД*/
-            // Shedule_Sender.SetTestShed(ref students, 790754149);
+            //Shedule_Sender.SetTestShed(ref students, test_uid);
             Console.WriteLine("\nБот включён. Для выключения нажмите любую кнопку.\n");
 
             Bot.OnMessage += OnMessage.Bot_OnMessage;
 
 
             Bot.StartReceiving();
-            Console.ReadKey();
+            //Console.ReadKey();
+            while (!exit)
+            {
+                //эчпочмак
+            }
             Bot.StopReceiving();
+            //Bot.OnMessage
 
-            Console.WriteLine("\nБот выключен.\n");
+            Console.WriteLine("\nБот выключен. Поток 1\n");
             students.WriteStudentsList(path);
             
         }
         /*// бот
-        public static readonly TelegramBotClient Bot = new TelegramBotClient("1318546767:AAGL7DTFappCbvoiPbIVn8owYYsS7mFEF7U");
+        public static readonly TelegramBotClient Bot = new TelegramBotClient(GetToken());
 
         // пользователи
         public static Students students = new Students();
