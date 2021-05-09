@@ -21,7 +21,7 @@ namespace StudentAssistantTelegramBot
             else
                 return;
 
-            Console.Write($"{DateTime.Now} | from: {e.Message.From.Username} | text: {message} | level before: {stud.users_loc}");
+            Console.Write($"{DateTime.Now} | from: {e.Message.From.Id} | text: {message} | level before: {stud.users_loc}");
 
             /* =================================== РАБОТАЮТ ВЕЗДЕ =================================== */
             if (message == "/start")
@@ -32,7 +32,7 @@ namespace StudentAssistantTelegramBot
                     $"Сейчас ты в главном меню.\n" +
                     $"Отсюда ты можешь перейти:\n" +
                     $"• в раздел учёбы командой /study\n" +
-                    $"• в раздел развлечений командой /fan\n\n" +
+                    $"• в раздел развлечений командой /fun\n\n" +
                     $"Ну что, будем учиться или отдохнём?";
                 stud.users_loc = LevelOfCode.MAIN_MENU;
             }
@@ -41,7 +41,7 @@ namespace StudentAssistantTelegramBot
                 answer = $"Ты в главном меню.\n" +
                     $"Отсюда ты можешь перейти:\n" +
                     $"• в раздел учёбы командой /study\n" +
-                    $"• в раздел развлечений командой /fan\n" +
+                    $"• в раздел развлечений командой /fun\n" +
                     $"• получить информацию о боте командой /info\n\n" +
                     $"Ну что, будем учиться или отдохнём?";
                 stud.users_loc = LevelOfCode.MAIN_MENU;
@@ -54,7 +54,7 @@ namespace StudentAssistantTelegramBot
                     $" тебе расслабиться во время подготовки рекомендацией музыки или забавным анекдотом.";
             }
             /* =================================== MAIN_MENU =================================== */
-            else if (message == "/fan" && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FAN_JANR))
+            else if (message == "/fun" && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FUN_JANR))
             {
                 answer = $"Ты в меню развлечений.\n" +
                     $"Здесь я могу:\n" +
@@ -62,7 +62,7 @@ namespace StudentAssistantTelegramBot
                     $"• порекомендовать музыку (команда /music)\n" +
                     $"• порекомендовать музыку по жанру (команда /gmusic)\n\n" +
                     $"Вернуться в главное меню - команда /menu";
-                stud.users_loc = LevelOfCode.FAN_MENU;
+                stud.users_loc = LevelOfCode.FUN_MENU;
             }
             else if (message == "/study" && stud.users_loc == LevelOfCode.MAIN_MENU)
             {
@@ -74,23 +74,23 @@ namespace StudentAssistantTelegramBot
                     $"Вернуться в главное меню - команда /menu";
                 stud.users_loc = LevelOfCode.STUDY_MENU;
             }
-            /* =================================== FAN_MENU =================================== */
-            else if (message == "/joke" && stud.users_loc == LevelOfCode.FAN_MENU)
+            /* =================================== FUN_MENU =================================== */
+            else if (message == "/joke" && stud.users_loc == LevelOfCode.FUN_MENU)
             {
                 answer = Secondary.RandMilJoke();
             }
-            else if (message == "/music" && stud.users_loc == LevelOfCode.FAN_MENU)
+            else if (message == "/music" && stud.users_loc == LevelOfCode.FUN_MENU)
             {
                 answer = Secondary.RandMusic();
             }
-            else if (message == "/gmusic" && stud.users_loc == LevelOfCode.FAN_MENU)
+            else if (message == "/gmusic" && stud.users_loc == LevelOfCode.FUN_MENU)
             {
                 answer = $"Хорошо, назови жанр.\n\nКлассика - /genre_classic\nРок - /genre_rock\nПоп - /genre_pop\n" +
                     $"Альтернатива - /genre_alternative\n\n" +
                     $"Вернуться в меню развлечений - команда /fan";
-                stud.users_loc = LevelOfCode.FAN_JANR;
+                stud.users_loc = LevelOfCode.FUN_JANR;
             }
-            else if (message.Contains("/genre") && stud.users_loc == LevelOfCode.FAN_JANR)
+            else if (message.Contains("/genre") && stud.users_loc == LevelOfCode.FUN_JANR)
             {
                 string j = "";
                 if (message.ToLower().Contains("classic"))
