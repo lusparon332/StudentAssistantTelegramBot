@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Telegram.Bot;
+using System.IO;
 
 namespace StudentAssistantTelegramBot
 {
@@ -23,30 +24,47 @@ namespace StudentAssistantTelegramBot
 
             Console.Write($"{DateTime.Now} | from: {e.Message.From.Username} | text: {message} | level before: {stud.users_loc}");
 
+            var rkm = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
+            rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+            {
+                new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 МЕНЮ 📌"),
+                },
+                new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("ℹ ИНФОРМАЦИЯ О БОТЕ ℹ"),
+                }
+            };
+
             /* =================================== РАБОТАЮТ ВЕЗДЕ =================================== */
             if (message == "/start")
             {
-                answer = $"Привет, студент! Я бот-помощник в подготовке к сессии, моя задача - помочь тебе " +
+                answer = $"Привет, студент! ✌\nЯ бот-помощник в подготовке к сессии, моя задача - помочь тебе " +
                     $"правильно распределить время в подготовке к сессии, составив расписание, и " +
                     $"стимулировать начать готовиться к ней периодическими напоминаниями.\n\n" +
                     $"Сейчас ты в главном меню.\n" +
                     $"Отсюда ты можешь перейти:\n" +
-                    $"• в раздел учёбы командой /study\n" +
-                    $"• в раздел развлечений командой /fan\n\n" +
+                    $"• в раздел учёбы ✏\n" +
+                    $"• в раздел развлечений ☕\n\n" +
                     $"Ну что, будем учиться или отдохнём?";
                 stud.users_loc = LevelOfCode.MAIN_MENU;
+
+                
+
             }
-            else if (message == "/menu")
+            else if (message.ToLower().Contains("меню"))
             {
-                answer = $"Ты в главном меню.\n" +
+                answer = $"Ты в главном меню. 📌\n" +
                     $"Отсюда ты можешь перейти:\n" +
-                    $"• в раздел учёбы командой /study\n" +
-                    $"• в раздел развлечений командой /fan\n" +
-                    $"• получить информацию о боте командой /info\n\n" +
+                    $"• в раздел учёбы\n" +
+                    $"• в раздел развлечений\n" +
+                    $"• получить информацию о боте\n\n" +
                     $"Ну что, будем учиться или отдохнём?";
+
                 stud.users_loc = LevelOfCode.MAIN_MENU;
             }
-            if (message == "/info")
+            if (message.ToLower().Contains("информация о боте"))
             {
                 answer = $"Я бот-помощник в подготовке к сессии, моя главная задача - помочь тебе " +
                     $"правильно распределить время в подготовке к сессии, составив расписание, и " +
@@ -54,77 +72,134 @@ namespace StudentAssistantTelegramBot
                     $" тебе расслабиться во время подготовки рекомендацией музыки или забавным анекдотом.";
             }
             /* =================================== MAIN_MENU =================================== */
-            else if (message == "/fan" && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FAN_JANR))
+            else if (message.ToLower().Contains("развлечения") && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FAN_JANR))
             {
-                answer = $"Ты в меню развлечений.\n" +
+                answer = $"Ты в меню развлечений. ☕\n\n" +
                     $"Здесь я могу:\n" +
-                    $"• рассказать тебе случайный анекдот (команда /joke)\n" +
-                    $"• порекомендовать музыку (команда /music)\n" +
-                    $"• порекомендовать музыку по жанру (команда /gmusic)\n\n" +
-                    $"Вернуться в главное меню - команда /menu";
+                    $"• рассказать тебе случайный анекдот 😂\n" +
+                    $"• порекомендовать музыку 🎵\n" +
+                    $"• порекомендовать музыку по жанру 🎵\n" +
+                    $"• вернуться в главное меню 📌";
                 stud.users_loc = LevelOfCode.FAN_MENU;
+
             }
-            else if (message == "/study" && stud.users_loc == LevelOfCode.MAIN_MENU)
+            else if (message.ToLower().Contains("учёба") && stud.users_loc == LevelOfCode.MAIN_MENU)
             {
-                answer = $"Ты в меню подготовки к сессии. ✏\n" +
+                answer = $"Ты в меню подготовки к сессии. ✏\n\n" +
                     $"Здесь я могу:\n" +
-                    $"• составить тебе расписание для сессии (команда /makeschedule)\n" +
-                    $"• дать совет по подготовке к сессии (команда /advice)\n" +
-                    $"• дать информацию о прогрессе в подготовке, полученную на основе твоего следования расписанию - /my_success\n\n" +
-                    $"Вернуться в главное меню - команда /menu";
+                    $"• составить тебе расписание для сессии ⏰\n" +
+                    $"• дать совет по подготовке к сессии 📒\n" +
+                    $"• дать информацию о прогрессе в подготовке, полученную на основе твоего следования расписанию 🔍\n" +
+                    $"• удалить расписание 🚫\n" +
+                    $"• вернуться в главное меню 📌";
                 stud.users_loc = LevelOfCode.STUDY_MENU;
             }
             /* =================================== FAN_MENU =================================== */
-            else if (message == "/joke" && stud.users_loc == LevelOfCode.FAN_MENU)
+            else if (message.ToLower().Contains("анекдот") && stud.users_loc == LevelOfCode.FAN_MENU)
             {
                 answer = Secondary.RandMilJoke();
             }
-            else if (message == "/music" && stud.users_loc == LevelOfCode.FAN_MENU)
+            else if (message.ToLower().Contains("музыка по жанру") && stud.users_loc == LevelOfCode.FAN_MENU)
+            {
+                answer = $"Хорошо, назови жанр или вернись в меню развлечений. 🎵";
+                stud.users_loc = LevelOfCode.FAN_JANR;
+
+            }
+            else if (message.ToLower().Contains("музыка") && stud.users_loc == LevelOfCode.FAN_MENU)
             {
                 answer = Secondary.RandMusic();
             }
-            else if (message == "/gmusic" && stud.users_loc == LevelOfCode.FAN_MENU)
-            {
-                answer = $"Хорошо, назови жанр.\n\nКлассика - /genre_classic\nРок - /genre_rock\nПоп - /genre_pop\n" +
-                    $"Альтернатива - /genre_alternative\n\n" +
-                    $"Вернуться в меню развлечений - команда /fan";
-                stud.users_loc = LevelOfCode.FAN_JANR;
-            }
-            else if (message.Contains("/genre") && stud.users_loc == LevelOfCode.FAN_JANR)
+            else if (stud.users_loc == LevelOfCode.FAN_JANR)
             {
                 string j = "";
-                if (message.ToLower().Contains("classic"))
+                if (message.ToLower().Contains("классика"))
                     j = "классическая";
-                else if (message.ToLower().Contains("rock"))
+                else if (message.ToLower().Contains("рок"))
                     j = "рок";
-                else if (message.ToLower().Contains("pop"))
+                else if (message.ToLower().Contains("поп"))
                     j = "поп";
-                else if (message.ToLower().Contains("alternative"))
+                else if (message.ToLower().Contains("альтернатива"))
                     j = "альтернатива";
                 answer = Secondary.JanrRandMusic(j);
             }
 
             /* =================================== STUDY_MENU =================================== */
-            else if (message == "/advice" && stud.users_loc == LevelOfCode.STUDY_MENU)
+            else if (message.ToLower().Contains("совет") && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 answer = "Задавай свой вопрос, студент!";
                 stud.users_loc = LevelOfCode.QUESTIONS_MENU;
             }
             /* =================================== QUESTIONS_MENU =================================== */
             else if (stud.users_loc == LevelOfCode.QUESTIONS_MENU)
+            {          
+                answer = "Держи список похожих вопросов с ответами. \nЕсли твоего вопроса здесь нет, нажми на соответсвующую кнопку.\nТогда вопрос будет отправлен" +
+                    " нашим добровольцам, которые ответят на него, после чего вопрос с ответом пополнят базу. \n\nСписок:\n" + questionnaire.FindMatch(message);
+                stud.users_loc = LevelOfCode.QUESTIONS_FIND;
+                questionnaire.Question = message;
+            }
+            else if (stud.users_loc == LevelOfCode.QUESTIONS_FIND)
             {
-                if (message == "/there_is_not")
+                if (message.ToLower().Contains(" нет моего вопроса "))
                 {
-                    answer = "Спасибо, ваш вопрос записан и скоро будет обработан! Возвращаем тебя в меню study.";
+                    answer = "Спасибо, ваш вопрос записан и скоро будет обработан! Как только на него ответят, тебе придёт уведомление. \nВозвращаем тебя в меню УЧЁБЫ ✏.";
                     questionnaire.AddNewQuestion();
+                    questionnaire.qt = new QuestionType(stud.student_id, questionnaire.Question, false);
+                    questionnaire.SendQuestToModer();
+                    stud.users_loc = LevelOfCode.STUDY_MENU;
+                }
+                if (message.ToLower().Contains(" я получил ответ "))
+                {
+                    answer = "Вот и хорошо. Возвращаем тебя в меню УЧЁБЫ ✏.";
+                    stud.users_loc = LevelOfCode.STUDY_MENU;
+                }
+                /*else if (int.TryParse(message, out int num) && num > 0 && num <= questionnaire.qss.Length)
+                {
+                    var lines = File.ReadAllLines("BD_Voprosov_1.txt");
+                    foreach (var line in lines)
+                    {
+                        var QA = line.Split("&&&", StringSplitOptions.RemoveEmptyEntries);
+                        if (QA[0] == questionnaire.qss[num - 1])
+                        {
+                            answer = QA[1];
+                            break;
+                        }
+                    }
                     stud.users_loc = LevelOfCode.STUDY_MENU;
                 }
                 else
-                    answer = "Выбери свой вопрос в списке похожих. \nЕсли его здесь нет, введи - /there_is_not\nТогда вопрос будет отправлен" +
-                        " нашим добровольцам, которые ответят на него, после чего вопрос с ответом пополнят базу. \nСписок:\n" + questionnaire.FindMatch(message);
+                {
+                    answer = "Некорректный ввод! Попробуй ввести номер вопроса ещё раз.";
+                }*/
             }
-
-            else if (message == "/my_success" && stud.users_loc == LevelOfCode.STUDY_MENU)
+            else if (stud.users_loc == LevelOfCode.TO_ANSWER)
+            {
+                if (questionnaire.qt.is_answered)
+                {
+                    answer = "На этот вопрос уже ответили.";
+                    stud.users_loc = stud.prev_loc;
+                }
+                else
+                {
+                    if (message == "badq")
+                        Program.Bot.SendTextMessageAsync(questionnaire.qt.from, "Ваш последний вопрос был помечен как \"спам\". Ответа на него вы не получите.");
+                    else
+                    {
+                        questionnaire.qt.is_answered = true;
+                        Program.Bot.SendTextMessageAsync(questionnaire.qt.from, $"На ваш вопрос ответили!\n\nВопрос: {questionnaire.Question}\nОтвет: {message}");
+                        stud.users_loc = stud.prev_loc;
+                        using (FileStream fs = new FileStream("BD_Voprosov_1.txt", FileMode.Append))
+                        using (StreamWriter sw = new StreamWriter(fs))
+                            sw.WriteLine($"Вопрос: {questionnaire.Question} | Ответ: {message}");
+                    }
+                }
+            }
+            else if (message.ToLower().Contains("удалить расписание") && stud.users_loc == LevelOfCode.STUDY_MENU)
+            {
+                foreach (var a in stud.Shedule.Keys)
+                    stud.Shedule[a] = new DateTime[] { };
+                answer = "Все расписания удалены. 🚫";
+            }
+            else if (message.ToLower().Contains("прогресс") && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
                 int dayUntil = (stud.current_exam.date.Date - DateTime.Now.Date).Days;
                 if (stud.success < 0)
@@ -134,31 +209,50 @@ namespace StudentAssistantTelegramBot
                 else
                     answer = $"Подготовка идёт стабильно. Дней до экзамена: {dayUntil}.";
             }
-            
+
             /* ============================= СОСТАВЛЕНИЕ РАСПИСАНИЯ ============================= */
-            else if (message == "/makeschedule" && stud.users_loc == LevelOfCode.STUDY_MENU)
+            else if (message.ToLower().Contains("расписание") && stud.users_loc == LevelOfCode.STUDY_MENU)
             {
-                answer = "Отлично. Перед тем, как начать, введи название предмета, по которому будет ближайший экзамен.";
-                stud.users_loc = LevelOfCode.MAKE_EXAM_NAME;
+                if (stud.Shedule.Count > 0)
+                {
+                    answer = "У тебя уже есть расписание. Если ты продолжишь создание нового, то предыдущее будет удалено. Если ты не хочешь этого, но нажми на кнопку отмены.";
+                    stud.users_loc = LevelOfCode.MAKE_EXAM_NAME;
+                }
+                else
+                {
+                    foreach (var k in stud.Shedule.Keys)
+                        stud.Shedule[k] = new DateTime[] { };
+                    answer = "Отлично. Перед тем, как начать, введи название предмета, по которому будет ближайший экзамен.";
+                    stud.users_loc = LevelOfCode.MAKE_EXAM_NAME;
+                }
             }
             else if (stud.users_loc == LevelOfCode.MAKE_EXAM_NAME)
             {
-                stud.current_exam.name = message;
-                answer = "Теперь введи количество вопросов в экзамене.";
-                stud.users_loc = LevelOfCode.MAKE_EXAM_CNT;
+                if (!stud.Shedule.ContainsKey(message))
+                {
+                    stud.current_exam.name = message;
+                    answer = "Теперь введи время, в которое тебе будет удобно готовиться в формате ЧЧ:ММ.";
+                    stud.users_loc = LevelOfCode.MAKE_EXAM_CNT;
+                }
+                else
+                {
+                    answer = "Такоt название экзамена ты уже вписывал. Попробуй ввести другое название.";
+                }
             }
             else if (stud.users_loc == LevelOfCode.MAKE_EXAM_CNT)
             {
-                int cnt_of_q = 1;
-                if (int.TryParse(message, out cnt_of_q))
+                (int, int) time = (0, 0);
+                if (int.TryParse(message.Substring(0, 2), out int hour) && int.TryParse(message.Substring(3, 2), out int min) &&
+                    hour < 24 && hour >= 0 && min < 60 && min >= 0 && message.Length == 5)
                 {
                     answer = "Принято. Теперь введи дату экзамена в формате ДД.ММ.ГГГГ, например 12.06.2021";
-                    stud.current_exam.question_cnt = cnt_of_q;
+                    time = (hour, min);
+                    stud.current_exam.ex_time = time;
                     stud.users_loc = LevelOfCode.MAKE_EXAM_DATE;
                 }
                 else
                 {
-                    answer = "Количество вопросов - число. Попробуй ввести ещё раз.";
+                    answer = "Некорректныый ввод времени. Попробуй ввести ещё раз.";
                 }
             }
             else if (stud.users_loc == LevelOfCode.MAKE_EXAM_DATE)
@@ -166,11 +260,11 @@ namespace StudentAssistantTelegramBot
                 int e_day = 1;
                 int e_month = 1;
                 int e_year = 2000;
-                if (message.Length == 10 && int.TryParse(message.Substring(0, 2), out e_day) && 
+                if (message.Length == 10 && int.TryParse(message.Substring(0, 2), out e_day) &&
                     int.TryParse(message.Substring(3, 2), out e_month) &&
                     int.TryParse(message.Substring(6, 4), out e_year) &&
                     e_month > 0 && e_month < 13 &&
-                    e_year > 2020 && e_year < 2900 && 
+                    e_year > 2020 && e_year < 2900 &&
                     IsRealDay(e_day, e_month, e_year))
                 {
                     stud.current_exam.date = new DateTime(e_year, e_month, e_day, 8, 30, 0);
@@ -184,11 +278,11 @@ namespace StudentAssistantTelegramBot
                         DateTime[] dates = new DateTime[dayUntil];
                         for (int i = 0; i < dayUntil; i++)
                         {
-                            DateTime date = new DateTime(now.Year, now.Month, now.Day, 13, 1, 7).AddDays(i + 1).AddMilliseconds(stud.student_id % 10000);
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, stud.current_exam.ex_time.Item1, stud.current_exam.ex_time.Item2, 0).AddDays(i).AddMilliseconds(stud.student_id % 10000);
                             dates[i] = date;
                         };
-                        answer = "Твоё расписание готово. Каждый день в обед я буду напоминать тебе о том, что пора " +
-                            "начать подготовку. В случае чего ты всегда можешь её перенести на несколько минут или часов.";
+                        answer = "Твоё расписание готово. Каждый день в удобное для тебя время я буду напоминать о том, что пора " +
+                            "начать подготовку. В случае чего ты всегда можешь её перенести на несколько минут или часов. Возвращаю тебя главное меню.";
                         stud.Shedule.Add(stud.current_exam.name, dates);
                     }
                     stud.users_loc = LevelOfCode.MAIN_MENU;
@@ -199,13 +293,13 @@ namespace StudentAssistantTelegramBot
                 }
             }
             /* =============================== ПЕРЕНОС ПОДГОТОВКИ =============================== */
-            else if (message == "/yes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            else if (message.ToLower().Contains("да ") && stud.users_loc == LevelOfCode.PREPARE_TIME)
             {
                 answer = "Отлично, удачи!";
                 stud.success++;
                 stud.users_loc = stud.prev_loc;
             }
-            else if (message == "/postpone_15_minutes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            else if (message.ToLower().Contains("перенести на 15 минут") && stud.users_loc == LevelOfCode.PREPARE_TIME)
             {
                 answer = "Хорошо, подготовка перенесена на 15 минут. Главное - долго не затягивай!";
                 DateTime now = DateTime.Now;
@@ -215,7 +309,7 @@ namespace StudentAssistantTelegramBot
                 stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
-            else if (message == "/postpone_30_minutes" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            else if (message.ToLower().Contains("перенести на 30 минут") && stud.users_loc == LevelOfCode.PREPARE_TIME)
             {
                 answer = "Хорошо, подготовка перенесена на 30 минут. Главное - долго не затягивай!";
                 DateTime now = DateTime.Now;
@@ -225,7 +319,7 @@ namespace StudentAssistantTelegramBot
                 stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
-            else if (message == "/postpone_1_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            else if (message.ToLower().Contains("перенести на 1 час") && stud.users_loc == LevelOfCode.PREPARE_TIME)
             {
                 answer = "Хорошо, подготовка перенесена на 1 час. Главное - долго не затягивай!";
                 stud.success--;
@@ -236,7 +330,7 @@ namespace StudentAssistantTelegramBot
                 stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
-            else if (message == "/postpone_2_hour" && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            else if (message.ToLower().Contains("перенести на 2 часа") && stud.users_loc == LevelOfCode.PREPARE_TIME)
             {
                 answer = "Хорошо, подготовка перенесена на 2 часа. Главное - долго не затягивай!";
                 stud.success--;
@@ -247,6 +341,12 @@ namespace StudentAssistantTelegramBot
                 stud.Shedule[stud.current_exam.name][l - dayUntil - 1] = new_date;
                 stud.users_loc = stud.prev_loc;
             }
+            else if (message.ToLower().Contains("нет, сегодня я не буду готовиться") && stud.users_loc == LevelOfCode.PREPARE_TIME)
+            {
+                answer = "Захотелось в армейку? Ну ладно, не буду мешать.";
+                stud.success--;
+                stud.users_loc = stud.prev_loc;
+            }
 
             /* ================================================================================== */
 
@@ -255,7 +355,121 @@ namespace StudentAssistantTelegramBot
             if (answer == "no_answer")
                 return;
 
-            Program.Bot.SendTextMessageAsync(stud.student_id, answer); // отправка сообщения
+            if (stud.users_loc == LevelOfCode.MAIN_MENU)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("✏ УЧЁБА ✏"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("☕ РАЗВЛЕЧЕНИЯ ☕"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("ℹ ИНФОРМАЦИЯ О БОТЕ ℹ"),
+                    }
+                };
+            else if (stud.users_loc == LevelOfCode.STUDY_MENU)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("⏰ РАСПИСАНИЕ ⏰"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📒 СОВЕТ 📒"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🔍 ПРОГРЕСС 🔍"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🚫 УДАЛИТЬ РАСПИСАНИЕ 🚫"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 МЕНЮ 📌"),
+                    }
+                };
+            else if (stud.users_loc == LevelOfCode.FAN_MENU)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("😂 АНЕКДОТ 😂"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎵 МУЗЫКА 🎵"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎵 МУЗЫКА ПО ЖАНРУ 🎵"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 МЕНЮ 📌"),
+                    }
+                };
+            else if (stud.users_loc == LevelOfCode.QUESTIONS_FIND)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("✏ Я ПОЛУЧИЛ ОТВЕТ ✏"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("❓ НЕТ МОЕГО ВОПРОСА ❓"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 МЕНЮ 📌"),
+                    }
+                };
+            else if (stud.users_loc == LevelOfCode.FAN_JANR)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎼 КЛАССИКА 🎼"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎸 РОК 🎸"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎶 ПОП 🎶"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("🎺 АЛЬТЕРНАТИВА 🎺"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("☕ РАЗВЛЕЧЕНИЯ ☕"),
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 МЕНЮ 📌"),
+                    }
+                };
+            else if (stud.users_loc == LevelOfCode.MAKE_EXAM_NAME || stud.users_loc == LevelOfCode.MAKE_EXAM_DATE || stud.users_loc == LevelOfCode.MAKE_EXAM_CNT)
+                rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("📌 ОТМЕНА (меню) 📌"),
+                    }
+                };
+
+
+            Program.Bot.SendTextMessageAsync(stud.student_id, answer, replyMarkup: rkm); // отправка сообщения
         }
 
         public static bool IsRealDay(int day, int month, int year)
@@ -284,3 +498,18 @@ namespace StudentAssistantTelegramBot
         }
     }
 }
+
+/*
+ rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
+                {
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Кнопка1"),
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Кнопка2")
+                    },
+                    new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[]
+                    {
+                        new Telegram.Bot.Types.ReplyMarkups.KeyboardButton("Кнопка3")
+                    }
+                };
+ */
