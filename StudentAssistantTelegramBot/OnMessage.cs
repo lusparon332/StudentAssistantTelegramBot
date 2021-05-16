@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace StudentAssistantTelegramBot
             else
                 return;
 
-            Console.Write($"{DateTime.Now} | from: {e.Message.From.Username} | text: {message} | level before: {stud.users_loc}");
+            Console.Write($"{DateTime.Now} | from: {e.Message.From.Id} | text: {message} | level before: {stud.users_loc}");
 
             var rkm = new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup();
             rkm.Keyboard = new Telegram.Bot.Types.ReplyMarkups.KeyboardButton[][]
@@ -47,11 +47,9 @@ namespace StudentAssistantTelegramBot
                     $"Отсюда ты можешь перейти:\n" +
                     $"• в раздел учёбы ✏\n" +
                     $"• в раздел развлечений ☕\n\n" +
+
                     $"Ну что, будем учиться или отдохнём?";
                 stud.users_loc = LevelOfCode.MAIN_MENU;
-
-                
-
             }
             else if (message.ToLower().Contains("меню"))
             {
@@ -60,6 +58,7 @@ namespace StudentAssistantTelegramBot
                     $"• в раздел учёбы\n" +
                     $"• в раздел развлечений\n" +
                     $"• получить информацию о боте\n\n" +
+
                     $"Ну что, будем учиться или отдохнём?";
 
                 stud.users_loc = LevelOfCode.MAIN_MENU;
@@ -73,6 +72,7 @@ namespace StudentAssistantTelegramBot
             }
             /* =================================== MAIN_MENU =================================== */
             else if (message.ToLower().Contains("развлечения") && (stud.users_loc == LevelOfCode.MAIN_MENU || stud.users_loc == LevelOfCode.FAN_JANR))
+
             {
                 answer = $"Ты в меню развлечений. ☕\n\n" +
                     $"Здесь я могу:\n" +
@@ -100,6 +100,7 @@ namespace StudentAssistantTelegramBot
                 answer = Secondary.RandMilJoke();
             }
             else if (message.ToLower().Contains("музыка по жанру") && stud.users_loc == LevelOfCode.FAN_MENU)
+
             {
                 answer = $"Хорошо, назови жанр или вернись в меню развлечений. 🎵";
                 stud.users_loc = LevelOfCode.FAN_JANR;
@@ -110,6 +111,7 @@ namespace StudentAssistantTelegramBot
                 answer = Secondary.RandMusic();
             }
             else if (stud.users_loc == LevelOfCode.FAN_JANR)
+
             {
                 string j = "";
                 if (message.ToLower().Contains("классика"))
@@ -520,3 +522,4 @@ namespace StudentAssistantTelegramBot
                     }
                 };
  */
+
