@@ -89,7 +89,7 @@ namespace StudentAssistantTelegramBot
 
 
             Bot.StartReceiving();
-            while (true)
+            while (!exit)
             {
                 if (exit)
                     Bot.StopReceiving();
