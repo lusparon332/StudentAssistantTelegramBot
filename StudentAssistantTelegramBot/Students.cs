@@ -41,7 +41,7 @@ namespace StudentAssistantTelegramBot
                     if (sp_line.Length > 2)
                     {
                         st.current_exam.name = sp_line[2];
-                        st.current_exam.ex_time = (int.Parse(sp_line[3].Substring(0, 2)), int.Parse(sp_line[3].Substring(3, 2)));
+                        st.current_exam.ex_time = (int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[0]), int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[0]));
                         st.current_exam.date = new DateTime(int.Parse(sp_line[4].Substring(6, 4)), int.Parse(sp_line[4].Substring(3, 2)), int.Parse(sp_line[4].Substring(0, 2)), 8, 30, 0);
 
                         DateTime now = DateTime.Now;
@@ -84,7 +84,11 @@ namespace StudentAssistantTelegramBot
                 {
                     StringBuilder to_add = new StringBuilder($"{elem.student_id} {(int)elem.users_loc}");
                     if (elem.current_exam.date != DateTime.Parse("01.01.2000"))
-                        to_add.Append($" {elem.current_exam.name} {elem.current_exam.ex_time.Item1}:{elem.current_exam.ex_time.Item2} {elem.current_exam.date}");
+                    {
+                        var a = elem.current_exam.name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        var b = string.Join('-', a);
+                        to_add.Append($" {b} {elem.current_exam.ex_time.Item1}:{elem.current_exam.ex_time.Item2} {elem.current_exam.date}");
+                    }
                     to_file.Add(to_add.ToString());
                 }
 
