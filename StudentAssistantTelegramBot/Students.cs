@@ -41,7 +41,7 @@ namespace StudentAssistantTelegramBot
                     if (sp_line.Length > 2)
                     {
                         st.current_exam.name = sp_line[2];
-                        st.current_exam.ex_time = (int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[0]), int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[0]));
+                        st.current_exam.ex_time = (int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[0]), int.Parse(sp_line[3].Split(':', StringSplitOptions.RemoveEmptyEntries)[1]));
                         st.current_exam.date = new DateTime(int.Parse(sp_line[4].Substring(6, 4)), int.Parse(sp_line[4].Substring(3, 2)), int.Parse(sp_line[4].Substring(0, 2)), 8, 30, 0);
 
                         DateTime now = DateTime.Now;
