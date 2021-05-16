@@ -62,7 +62,7 @@ namespace StudentAssistantTelegramBot
             //BotMain.Abort();
             //WarnThread.Abort();
             Console.WriteLine("\nБот выключен окончательно.\n");
-            students.WriteStudentsList(path);
+            //students.WriteStudentsList(path);
         }
 
 

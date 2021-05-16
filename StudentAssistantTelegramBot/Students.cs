@@ -38,9 +38,27 @@ namespace StudentAssistantTelegramBot
                     var id = long.Parse(sp_line[0]);
                     var loc = int.Parse(sp_line[1]);
                     var st = new Student(id, (LevelOfCode)loc);
+                    if (sp_line.Length > 2)
+                    {
+                        st.current_exam.name = sp_line[2];
+                        st.current_exam.ex_time = (int.Parse(sp_line[3].Substring(0, 2)), int.Parse(sp_line[3].Substring(3, 2)));
+                        st.current_exam.date = new DateTime(int.Parse(sp_line[4].Substring(6, 4)), int.Parse(sp_line[4].Substring(3, 2)), int.Parse(sp_line[4].Substring(0, 2)), 8, 30, 0);
+
+                        DateTime now = DateTime.Now;
+                        int dayUntil = (st.current_exam.date.Date - now.Date).Days;
+                        DateTime[] dates = new DateTime[dayUntil];
+                        for (int i = 0; i < dayUntil; i++)
+                        {
+                            DateTime date = new DateTime(now.Year, now.Month, now.Day, st.current_exam.ex_time.Item1, st.current_exam.ex_time.Item2, 0).AddDays(i);
+                            dates[i] = date;
+                        };
+                          
+                        st.Shedule.Add(st.current_exam.name, dates);
+                    }
 
                     this.list.Add(st);
                 }
+
                 Console.WriteLine($"Чтение завершено успешно. Из файла {path} получено студентов: {this.list.Count}");
             }
             catch (FileNotFoundException exc)
@@ -63,7 +81,13 @@ namespace StudentAssistantTelegramBot
 
                 var to_file = new List<string>();
                 foreach (var elem in list)
-                    to_file.Add($"{elem.student_id} {(int)elem.users_loc}");
+                {
+                    StringBuilder to_add = new StringBuilder($"{elem.student_id} {(int)elem.users_loc}");
+                    if (elem.current_exam.date != DateTime.Parse("01.01.2000"))
+                        to_add.Append($" {elem.current_exam.name} {elem.current_exam.ex_time.Item1}:{elem.current_exam.ex_time.Item2} {elem.current_exam.date}");
+                    to_file.Add(to_add.ToString());
+                }
+
                 File.WriteAllLines(path, to_file, Encoding.UTF8);
                 Console.WriteLine($"Запись студентов в {path} успешно завершена. Записано студентов: {list.Count}");
             }
@@ -114,14 +138,14 @@ namespace StudentAssistantTelegramBot
     public class Exam
     {
         public string name; // название предмета
-        public (int, int) ex_time; // количество вопросов
+        public (int, int) ex_time; // удобное время
         public DateTime date; // дата экзамена
 
         public Exam()
         {
             this.name = "name";
             this.ex_time = (0, 0);
-            this.date = DateTime.Now.AddDays(77777);
+            this.date = DateTime.Parse("01.01.2000");
         }
     }
 }
