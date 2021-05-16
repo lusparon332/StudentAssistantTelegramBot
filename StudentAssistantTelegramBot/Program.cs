@@ -89,10 +89,10 @@ namespace StudentAssistantTelegramBot
 
 
             Bot.StartReceiving();
-            //Console.ReadKey();
-            while (!exit)
+            while (true)
             {
-                //эчпочмак
+                if (exit)
+                    break;
             }
             Bot.StopReceiving();
             //Bot.OnMessage
