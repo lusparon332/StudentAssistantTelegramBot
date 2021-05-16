@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -65,7 +65,6 @@ namespace StudentAssistantTelegramBot
         /// <param name="NeedSend"></param>
         public static void Bot_SendWarn_core(DateTime now, ref List<SendObj> NeedSend)
         {
-
             foreach (var i in NeedSend)
             {
                 if (now.Hour == i.SendTime.Hour && now.Minute == i.SendTime.Minute)// && now.Minute == i.SendTime.Minute && now.Second == i.SendTime.Second)
@@ -114,6 +113,12 @@ namespace StudentAssistantTelegramBot
                         };
 
                         Program.Bot.SendTextMessageAsync(i.uid, answer, replyMarkup: rkm);
+                        Sended.Add(i);
+                        Console.WriteLine($"Оповещение отправлено пользователю: {i.uid}");
+                    }
+                    //if (!Sended.Contains(i))
+                    //{
+                        Program.Bot.SendTextMessageAsync(i.uid, answer);
                         Sended.Add(i);
                         Console.WriteLine($"Оповещение отправлено пользователю: {i.uid}");
                     }
