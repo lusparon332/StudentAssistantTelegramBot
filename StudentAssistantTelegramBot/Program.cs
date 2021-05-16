@@ -83,7 +83,7 @@ namespace StudentAssistantTelegramBot
 
             /*Конец области заполнения БД*/
             //Shedule_Sender.SetTestShed(ref students, test_uid);
-            Console.WriteLine("\nБот включён. Для выключения нажмите любую кнопку.\n");
+            Console.WriteLine("\nБот включён. Для выключения ввести stop.\n");
 
             Bot.OnMessage += OnMessage.Bot_OnMessage;
 
@@ -92,7 +92,7 @@ namespace StudentAssistantTelegramBot
             while (true)
             {
                 if (exit)
-                    break;
+                    Bot.StopReceiving();
             }
             Bot.StopReceiving();
             //Bot.OnMessage
